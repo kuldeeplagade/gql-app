@@ -2,7 +2,7 @@ from graphene import Schema
 from fastapi import FastAPI
 from starlette_graphene3 import GraphQLApp,make_playground_handler
 from app.db.database import prepare_database, Session
-from app.db.models import Employer,Job,User
+from app.db.models import Employer,Job,JobApplication
 from app.gql.queries import Query
 from app.gql.mutations import Mutation
 
@@ -28,10 +28,21 @@ def get_employers():
 #     session.close()
 #     return jobs
  
+ 
+@app.get("/apps")
+def get_applications():
+     with Session() as session:
+         return session.query(JobApplication).count()
+         
+ 
+ 
+ 
+ 
 @app.get("/jobs")
 def get_jobs():
     with Session() as session:
         return session.query(Job).all()
+    
 
 app.mount("/graphql", GraphQLApp(
     schema=schema,
